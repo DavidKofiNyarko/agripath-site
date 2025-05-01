@@ -238,7 +238,11 @@
           background-position: center;
         }
 
-    
+        .faq-section {
+          /* background-image: url('/faq.jpg'); */
+          background-size: cover;
+          background-position: center;
+        }
 
         .contact-section {
           background-image: url('/grass.jpg');
