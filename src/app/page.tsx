@@ -22,8 +22,7 @@ const AgriPathLandingPage = () => {
       <InvestmentOpportunitiesSection />
       {/* <CallToActionSection /> */}
       <AvailableInvestments />
-      <HowItWorksAndFAQ />
-      <ContactSection />
+      <HowItWork  ction />
       <AgripathFooter />
       {/* Additional content would be added here */}
     </div>
