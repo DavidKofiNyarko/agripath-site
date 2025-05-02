@@ -7,7 +7,8 @@ import AgripathFooter from "./sections/footer";
 import HeroSection from "./sections/HeroSection";
 import AvailableInvestments from "./sections/InvestmentsSection";
 import InvestmentOpportunitiesSection from "./sections/InvestmentOpportunitiesSection";
-
+import { DefaultSeo } from "next-seo";
+import SEO from '../../next-seo.config'
 const AgriPathLandingPage = () => {
   return (
     <div className="min-h-screen font-sans">
@@ -15,6 +16,7 @@ const AgriPathLandingPage = () => {
       {/* <Navbar /> */}
 
       {/* Hero Section Component */}
+      <DefaultSeo SEO />
       <HeroSection />
       <AboutSection />
       <InvestmentOpportunitiesSection />
