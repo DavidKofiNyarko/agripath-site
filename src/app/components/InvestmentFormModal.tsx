@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, Loader2 } from 'lucide-react';
+import { X, Check, Loader2, CloudCog } from 'lucide-react';
+import { select } from 'framer-motion/client';
 
 interface InvestmentFormModalProps {
   isOpen: boolean;
@@ -41,16 +42,37 @@ export default function InvestmentFormModal({ isOpen, onClose }: InvestmentFormM
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+    const airtableBaseId = 'appnXR8HBSlvBGHhX';
+    const airtableTableId= 'tbloZx12SgBpb4ggr';
+    const airtableApiKey='patgEqThfqkt0b5oi.c6a8ba206431f0157b489a798aa7dc4faef60342bcedfe97b1ef84216f04aec1'
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
       // TODO: Connect to Airtable
-      console.log('Form submitted:', formData);
-      
+     
+        await fetch(`https://api.airtable.com/v0/${airtableBaseId}/${airtableTableId}`,{
+          method:"POST",
+          headers:{
+            Authorization:`Bearer ${airtableApiKey}`,
+            'Content-Type':'application/json',
+          },
+          body: JSON.stringify({
+            fields:{
+              name:formData.name,
+              email:formData.email,
+              phone:`${formData.countryCode} ${formData.phone}`,
+              selectedCrops:formData.selectedCrops.join(', '),
+              selectedUnits: formData.selectedUnits,
+            }
+          })
+          
+        })
+     
+      // console.log('Form submitted:', formData);
       setShowSuccess(true);
-      setIsLoading(false);
+      setIsLoading(false);    
       
+         
       // Reset form after 2 seconds of showing success
       setTimeout(() => {
         setFormData({
