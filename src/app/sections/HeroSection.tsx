@@ -2,12 +2,20 @@ import React from "react";
 import { Gochi_Hand } from "next/font/google";
 import InfiniteScrollCrops from "../components/InfiniteScrollCrops";
 import Navbar from "../components/Navbar";
+
 // Google Font Setup
 const Gothic = Gochi_Hand({
   subsets: ["latin"],
   weight: ["400"],
   display: "swap",
 });
+
+
+
+  const handleInvestClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // setIsModalOpen(true);
+  };
 
 const HeroSection = () => {
   return (
@@ -81,7 +89,9 @@ const HeroSection = () => {
         </div>
 
         {/* CTA Button */}
-        <button className="bg-primary hover:bg-green-700 text-primary-foreground font-bold py-2 sm:py-3 px-6 sm:px-8 rounded-2xl transition duration-300 shadow-lg transform hover:scale-105 text-sm sm:text-base">
+        <button className="bg-primary hover:bg-green-700 text-primary-foreground font-bold py-2 sm:py-3 px-6 sm:px-8 rounded-2xl transition duration-300 shadow-lg transform hover:scale-105 text-sm sm:text-base"
+          
+          >
           Start Investing
         </button>
       </div>

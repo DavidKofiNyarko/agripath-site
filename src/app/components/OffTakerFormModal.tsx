@@ -160,7 +160,7 @@ export default function OfftakerFormModal({ isOpen, onClose }: OfftakerFormModal
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: 'spring', duration: 0.5 }}
-            className="bg-white rounded-3xl w-full max-w-lg p-6 relative"
+            className="bg-white border-1 border-green-800 rounded-3xl w-full max-w-lg p-6 relative"
             onClick={e => e.stopPropagation()}
           >
             {/* Progress Indicator */}

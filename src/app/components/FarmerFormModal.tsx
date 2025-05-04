@@ -170,14 +170,14 @@ export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProp
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: 'spring', duration: 0.5 }}
-            className="bg-white border-2 border-green-700 rounded-3xl w-full max-w-lg p-6 relative"
+            className="bg-white  border-2 border-green-800 rounded-3xl w-full max-w-lg p-6 relative"
             onClick={e => e.stopPropagation()}
           >
             {/* Rounded Indicators */}
             <div className="flex justify-center items-center mb-6">
               <div className="flex items-center">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                  className={`w-8 h-8  rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
                     page === 1 ? 'bg-green-700 text-yellow-500' : 'bg-green-800 text-yellow-600 border-green-700'
                   }`}
                 >
