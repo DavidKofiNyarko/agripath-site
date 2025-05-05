@@ -1,7 +1,9 @@
-import React from "react";
+'use client'
+import React, { useState } from "react";
 import { Gochi_Hand } from "next/font/google";
 import InfiniteScrollCrops from "../components/InfiniteScrollCrops";
 import Navbar from "../components/Navbar";
+import InvestmentFormModal from "../components/InvestmentFormModal";
 
 // Google Font Setup
 const Gothic = Gochi_Hand({
@@ -10,14 +12,14 @@ const Gothic = Gochi_Hand({
   display: "swap",
 });
 
-
+const HeroSection = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleInvestClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    // setIsModalOpen(true);
+    setIsModalOpen(true);
   };
 
-const HeroSection = () => {
   return (
     <>
     <Navbar />
@@ -89,15 +91,22 @@ const HeroSection = () => {
         </div>
 
         {/* CTA Button */}
-        <button className="bg-primary hover:bg-green-700 text-primary-foreground font-bold py-2 sm:py-3 px-6 sm:px-8 rounded-2xl transition duration-300 shadow-lg transform hover:scale-105 text-sm sm:text-base"
-          
-          >
+        <button 
+          className="bg-primary hover:bg-green-700 text-primary-foreground font-bold py-2 sm:py-3 px-6 sm:px-8 rounded-2xl transition duration-300 shadow-lg transform hover:scale-105 text-sm sm:text-base"
+          onClick={handleInvestClick}
+        >
           Start Investing
         </button>
       </div>
-    </div><div className="relative z-6">
-        <InfiniteScrollCrops />
-      </div></>
+    </div>
+    
+    <div className="relative z-6">
+      <InfiniteScrollCrops />
+    </div>
+    
+    {/* Investment Form Modal */}
+    <InvestmentFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
   );
 };
 

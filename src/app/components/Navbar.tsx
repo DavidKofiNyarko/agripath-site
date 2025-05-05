@@ -3,11 +3,15 @@ import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import InvestmentFormModal from "./InvestmentFormModal";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   const navLinks = [
     { href: "/", label: "Home" },
@@ -100,8 +104,8 @@ const Navbar = () => {
 
             <div className="hidden md:flex items-center space-x-4">
               <motion.div variants={itemVariants}>
-                <Link
-                  href="/invest"
+                <button
+                  onClick={openModal}
                   className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium shadow-sm text-base"
                 >
                   <motion.span
@@ -111,7 +115,7 @@ const Navbar = () => {
                   >
                     Start Investing
                   </motion.span>
-                </Link>
+                </button>
               </motion.div>
             </div>
 
@@ -165,25 +169,30 @@ const Navbar = () => {
                 className="pt-4 pb-3 border-t border-gray-200"
                 variants={itemVariants}
               >
-                <Link
+                {/* <Link
                   href="/login"
                   className="block px-3 py-2 text-gray-700 hover:text-green-600 hover:bg-gray-50 rounded-md transition-colors duration-200 text-base"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Sign In
-                </Link>
-                <Link
-                  href="/invest"
-                  className="block px-3 py-2 mt-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200 text-base"
-                  onClick={() => setIsMenuOpen(false)}
+                </Link> */}
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    openModal();
+                  }}
+                  className="block w-full text-left px-3 py-2 mt-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200 text-base"
                 >
                   Invest Now
-                </Link>
+                </button>
               </motion.div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Investment Form Modal */}
+      <InvestmentFormModal isOpen={isModalOpen} onClose={closeModal} />
     </motion.div>
   );
 };
