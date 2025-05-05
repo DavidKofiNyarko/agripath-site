@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Phone, X } from 'lucide-react';
+import { Check, Phone, X } from 'lucide-react';
 
 interface FarmerFormModalProps {
   isOpen: boolean;
@@ -20,9 +20,11 @@ const cropOptions = [
 ];
 
 export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProps) {
+  const [page, setPage] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
+    countryCode: '+233',
     email: '',
     location: '',
     farmingYears: '',
@@ -31,12 +33,24 @@ export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProp
     irrigationAccess: '',
     farmInputsNeeded: '',
   });
-  const [page, setPage] = useState(1);
+
 
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-
+// Reset form page whenever modal opens
+    useEffect(() => {
+      if (isOpen) {
+        setPage(1);
+      }
+    }, [isOpen]);
+  
+    // Wrapper to reset page on close
+    function handleClose() {
+      setPage(1);
+      onClose();
+    }
+  
 
 
    const handleSubmit = async (e: React.FormEvent) => {
@@ -61,7 +75,7 @@ export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProp
           body: JSON.stringify({
             fields:{
               name:formData.name,
-              phone:formData.phone,
+              phone:`${formData.countryCode} ${formData.phone}`,
               email:formData.email,
               location:formData.location,
               farmingYears:formData.farmingYears,
@@ -75,12 +89,14 @@ export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProp
           
         })
         setShowSuccess(true);
+        setPage(1);
         setIsLoading(false);
   
         setTimeout(() => {
           setFormData({
             name:'',
             phone:'',
+            countryCode: '+233',
             email:'',
             location:'',
             farmingYears:'',
@@ -109,6 +125,35 @@ export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProp
     }));
   };
 
+    const SuccessDialog = () => (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      >
+        <motion.div
+          initial={{ scale: 0.9 }}
+          animate={{ scale: 1 }}
+          className="bg-white rounded-2xl p-6 w-full max-w-sm text-center shadow-xl"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", delay: 0.1 }}
+            className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4"
+          >
+            <Check className="w-8 h-8 text-green-600" />
+          </motion.div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">Thank You!</h3>
+          <p className="text-gray-600">
+            Your investment request has been received. We'll get back to you soon.
+          </p>
+        </motion.div>
+      </motion.div>
+    );
+
+  
  
   return (
     <AnimatePresence>
@@ -118,17 +163,14 @@ export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProp
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-          onClick={() => {
-            setPage(1); // Reset to page 1
-            onClose(); // Close the modal
-          }}
+          onClick={handleClose}  
         >
           <motion.div
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: 'spring', duration: 0.5 }}
-            className="bg-white border-2 border-green-600 rounded-3xl w-full max-w-lg p-6 relative"
+            className="bg-white border-2 border-green-700 rounded-3xl w-full max-w-lg p-6 relative"
             onClick={e => e.stopPropagation()}
           >
             {/* Rounded Indicators */}
@@ -136,15 +178,15 @@ export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProp
               <div className="flex items-center">
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
-                    page === 1 ? 'bg-green-600 text-white' : 'bg-white text-green-600 border-green-600'
+                    page === 1 ? 'bg-green-700 text-yellow-500' : 'bg-green-800 text-yellow-600 border-green-700'
                   }`}
                 >
                   1
                 </div>
-                <div className="w-10 h-0.5 bg-green-600"></div>
+                <div className="w-10 h-0.5 bg-green-700"></div>
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
-                    page === 2 ? 'bg-green-600 text-white' : 'bg-white text-green-600 border-green-600'
+                    page === 2 ? 'bg-green-700 text-yellow-500' : 'bg-white text-green-700 border-green-700'
                   }`}
                 >
                   2
@@ -191,6 +233,18 @@ export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProp
                     What’s your phone number? <span className="text-red-500">*</span>
                   </label>
                   <div className="flex gap-2">
+                    <select
+                        value={formData.countryCode}
+                        onChange={(e) => setFormData(prev => ({ ...prev, countryCode: e.target.value }))}
+                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      >
+                        <option value="+233">🇬🇭 +233</option>
+                        <option value="+234">🇳🇬 +234</option>
+                        <option value="+27">🇿🇦 +27</option>
+                        <option value="+254">🇰🇪 +254</option>
+                        <option value="+255">🇹🇿 +255</option>
+                    </select>
+                                      
                     <input
                       type="tel"
                       required
@@ -212,7 +266,7 @@ export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProp
                     value={formData.email}
                     onChange={e => setFormData({ ...formData, email: e.target.value })}
                     placeholder="michael@example.com"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent"
                   />
                 </div>
 
@@ -248,14 +302,14 @@ export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProp
                   <button
                     type="button"
                     onClick={onClose}
-                    className="py-3 px-4 border-green-900 bg-gray-500 text-white rounded-lg font-medium hover:bg-gray-600 transition-all w-32"
+                    className="py-3 px-4 border-2 border-green-700 bg-white-500 text-green-750 rounded-lg font-bold hover:bg-green-300 transition-all w-54"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
                     onClick={() => setPage(2)}
-                    className="py-3 px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-all w-32"
+                    className="py-3 px-4 bg-green-800 text-yellow-500 rounded-lg font-bold hover:bg-green-600 transition-all w-54"
                   >
                     Next
                   </button>
@@ -291,7 +345,7 @@ export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProp
                         onClick={() => handleCropSelection(crop)}
                         className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                           formData.selectedCrops.includes(crop)
-                            ? 'bg-green-600 text-white'
+                            ? 'bg-green-700 text-white'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                       >
@@ -313,7 +367,7 @@ export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProp
                         onClick={() => setFormData({ ...formData, irrigationAccess: option })}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                           formData.irrigationAccess === option
-                            ? 'bg-green-600 text-white'
+                            ? 'bg-green-700 text-white'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                       >
@@ -335,7 +389,7 @@ export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProp
                         onClick={() => setFormData({ ...formData, farmInputsNeeded: option })}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                           formData.farmInputsNeeded === option
-                            ? 'bg-green-600 text-white'
+                            ? 'bg-green-700 text-white'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                       >
@@ -345,17 +399,10 @@ export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProp
                   </div>
                 </div>
 
-                <div className="flex justify-between">
-                  <button
-                    type="button"
-                    onClick={() => setPage(1)}
-                    className="py-3 px-4 bg-gray-500 text-white rounded-lg font-medium hover:bg-gray-600 transition-all w-32"
-                  >
-                    Back
-                  </button>
+                <div className="flex justify-center items-center">
                   <button
                     type="submit"
-                    className="py-3 px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-all w-32"
+                    className="py-3 px-4 bg-green-900 text-yellow-500 rounded-lg font-bold hover:bg-green-700 transition-all w-80"
                   >
                     Apply to Join
                   </button>
@@ -365,6 +412,9 @@ export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProp
           </motion.div>
         </motion.div>
       )}
+      <AnimatePresence>
+              {showSuccess && <SuccessDialog />}
+            </AnimatePresence>
     </AnimatePresence>
   );
 }

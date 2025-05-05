@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check, Loader2 } from 'lucide-react';
 
@@ -8,19 +8,6 @@ interface OfftakerFormModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-const [page, setPage] = useState(1);
-const [isOpen,setIsOpen] = useState(true)
-const openModal = () => {
-  setPage(1); // Reset to page 1 whenever the modal opens
-  setIsOpen(true); // Open the modal
-};
-
-const closeModal = () => {
-  setPage(1); // Reset to page 1 whenever the modal closes
-  setIsOpen(false); // Close the modal
-};
-
 
 
 const cropOptions = [
@@ -31,9 +18,11 @@ const cropOptions = [
   'Habanero',
   'Cassava',
   'Other',
-];
-
+]
+ 
 export default function OfftakerFormModal({ isOpen, onClose }: OfftakerFormModalProps) {
+  const [page, setPage] = useState(1);
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -45,9 +34,23 @@ export default function OfftakerFormModal({ isOpen, onClose }: OfftakerFormModal
     paymentTerms: '',
     deliveryOption: '',
   });
+  
   const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false); 
+  
+    // Reset form page whenever modal opens
+    useEffect(() => {
+      if (isOpen) {
+        setPage(1);
+      }
+    }, [isOpen]);
+  
+    // Wrapper to reset page on close
+    function handleClose() {
+      setPage(1);
+      onClose();
+    }
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,6 +84,7 @@ export default function OfftakerFormModal({ isOpen, onClose }: OfftakerFormModal
         
       })
       setShowSuccess(true);
+      setPage(1);
       setIsLoading(false);
 
       setTimeout(() => {
@@ -113,6 +117,34 @@ export default function OfftakerFormModal({ isOpen, onClose }: OfftakerFormModal
     }));
   };
 
+    const SuccessDialog = () => (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      >
+        <motion.div
+          initial={{ scale: 0.9 }}
+          animate={{ scale: 1 }}
+          className="bg-white rounded-2xl p-6 w-full max-w-sm text-center shadow-xl"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", delay: 0.1 }}
+            className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4"
+          >
+            <Check className="w-8 h-8 text-green-600" />
+          </motion.div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">Thank You!</h3>
+          <p className="text-gray-600">
+            Your investment request has been received. We'll get back to you soon.
+          </p>
+        </motion.div>
+      </motion.div>
+    );10
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -121,8 +153,7 @@ export default function OfftakerFormModal({ isOpen, onClose }: OfftakerFormModal
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-          onClick={()=>}
-         
+          onClick={handleClose}        
         >
           <motion.div
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -133,21 +164,45 @@ export default function OfftakerFormModal({ isOpen, onClose }: OfftakerFormModal
             onClick={e => e.stopPropagation()}
           >
             {/* Progress Indicator */}
-            <div className="flex items-center justify-center mb-6">
+            {/* <div className="flex items-center justify-center mb-6">
               <div className="flex items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${page === 1 ? 'border-green-900' : 'border-gray-300'} bg-green-900 text-lg font-bold text-yellow-600`}>1</div>
                 <div className="w-25 h-1 bg-green-900 mx-0"></div>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${page === 2 ? 'border-green-900' : 'border-green-800'} bg-white text-lg font-bold text-green-700`}>2</div>
               </div>
-            </div>
+            </div> */}
 
-            {/* Close Button */}
+              {/* Rounded Indicators */}
+                 <div className="flex justify-center items-center mb-6">
+              {/* Close Button */}
+              
             <button
               onClick={onClose}
-              className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 transition-colors"
+              className="absolute right-4 top-5 pr-1.5 shadow-2xl text-gray-400 hover:text-gray-600 transition-colors"
             >
               <X size={24} />
             </button>
+            
+                <div className="flex items-center">
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                    page === 1 ? 'bg-green-700 text-yellow-500' : 'bg-green-700 text-yellow-600 border-green-700'
+                  }`}
+                  >
+                  1
+                </div>
+                <div className="w-20 h-0.5 bg-green-700"></div>
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                    page === 2 ? 'bg-green-700 text-yellow-500' : 'bg-white text-yellow-600 border-green-700'
+                  }`}
+                >
+                  2
+                </div>
+              </div>
+            </div>
+
+            
 
             {/* Form Header */}
             <div className="text-center mb-6">
@@ -157,7 +212,7 @@ export default function OfftakerFormModal({ isOpen, onClose }: OfftakerFormModal
                 questions.
               </p>
             </div>
-
+                  
             {/* Form Pages */}
             {page === 1 && (
               <form className="space-y-4">
@@ -188,6 +243,7 @@ export default function OfftakerFormModal({ isOpen, onClose }: OfftakerFormModal
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />
                 </div>
+                
 
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">
@@ -237,7 +293,7 @@ export default function OfftakerFormModal({ isOpen, onClose }: OfftakerFormModal
                     ))}
                   </div>
                 </div>
-
+                    
                 <div className="flex justify-between">
                   <button
                     type="button"
@@ -254,6 +310,7 @@ export default function OfftakerFormModal({ isOpen, onClose }: OfftakerFormModal
                     Next
                   </button>
                 </div>
+                
               </form>
             )}
 
@@ -338,7 +395,7 @@ export default function OfftakerFormModal({ isOpen, onClose }: OfftakerFormModal
                     whileHover={!isLoading ? { scale: 1.02 } : {}}
                     whileTap={!isLoading ? { scale: 0.98 } : {}}
                     className={`py-3 px-18 rounded-lg font-bold transition-all duration-300 relative overflow-hidden
-                    ${isLoading ? 'bg-green-700 text-transparent' : 'bg-green-950 text-yellow-500 font-bold hover:bg-green-700'}`}
+                    ${isLoading ? 'bg-green-700 text-transparent' : 'bg-green-900 text-yellow-500 font-bold hover:bg-green-700'}`}
                   >
                     <span className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300
                       ${isLoading ? 'opacity-100' : 'opacity-0'}`}>
@@ -350,10 +407,13 @@ export default function OfftakerFormModal({ isOpen, onClose }: OfftakerFormModal
                     </span>
                   </motion.button>
                 </div>
+                
               </form>
+              
             )}
           </motion.div>
         </motion.div>
+        
       )}
 
       {/* Success Dialog */}
@@ -382,10 +442,14 @@ export default function OfftakerFormModal({ isOpen, onClose }: OfftakerFormModal
               <p className="text-gray-600">
                 Your request has been received. We'll get back to you soon.
               </p>
+            
             </motion.div>
           </motion.div>
+          
         )}
       </AnimatePresence>
     </AnimatePresence>
+    
   );
 }
+
