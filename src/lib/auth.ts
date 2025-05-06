@@ -1,6 +1,6 @@
 import { supabase } from './api';
 
-export const signIn = async (email: string, password: string) => {
+export const signIn = async () => {
 //   const { user, error } = await supabase.auth.signInWithPassword({ email, password });
 //   if (error) throw error;
 //   return user;

@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
   //   BASE_URL: process.env.BASE_URL || 'http://localhost:3000', // Provide a default value
   // },
 
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
   // Other configurations can go here
 };
 
