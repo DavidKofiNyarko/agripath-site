@@ -42,9 +42,9 @@ export default function InvestmentFormModal({ isOpen, onClose }: InvestmentFormM
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    const airtableBaseId = 'appnXR8HBSlvBGHhX';
-    const airtableTableId= 'tbloZx12SgBpb4ggr';
-    const airtableApiKey='patgEqThfqkt0b5oi.c6a8ba206431f0157b489a798aa7dc4faef60342bcedfe97b1ef84216f04aec1'
+    const airtableBaseId = process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID;
+    const airtableTableId= process.env.NEXT_PUBLIC_AIRTABLE_INVEST_TABLE_ID;
+    const airtableApiKey= process.env.NEXT_PUBLIC_AIRTABLE_API_TOKEN;
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
