@@ -59,10 +59,9 @@ export default function FarmerFormModal({ isOpen, onClose }: FarmerFormModalProp
       console.log("Request Payload:", formData);
       
        
-      const airtableBaseId = 'appnXR8HBSlvBGHhX';
-      const airtableTableId= 'tblM421tN99zjvSE5'
-      const airtableApiKey='patgEqThfqkt0b5oi.c6a8ba206431f0157b489a798aa7dc4faef60342bcedfe97b1ef84216f04aec1'
-  
+      const airtableBaseId = process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID;
+      const airtableTableId= process.env.NEXT_PUBLIC_AIRTABLE_FARMER_TABLE_ID;
+      const airtableApiKey= process.env.NEXT_PUBLIC_AIRTABLE_API_TOKEN;
       try {
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 2000));
